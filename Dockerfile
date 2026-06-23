@@ -1,5 +1,5 @@
-# 使用輕量的 Node.js 18 Alpine 版本
-FROM node:18-alpine
+# 使用較新的 Node.js 20 Alpine 版本 (解決 undici 的 File is not defined 錯誤)
+FROM node:20-alpine
 
 # 設定工作目錄
 WORKDIR /usr/src/app
