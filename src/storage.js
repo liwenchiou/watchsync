@@ -70,8 +70,32 @@ function isNewPost(platform, account, postId) {
   return true;
 }
 
+/**
+ * 檢查是否為初次建立的帳號 (無歷史紀錄)
+ */
+function isNewAccount(platform, account) {
+  const state = readState();
+  return !state[platform] || !state[platform][account] || !state[platform][account].seen_posts || state[platform][account].seen_posts.length === 0;
+}
+
+/**
+ * 初次初始化帳號，直接寫入陣列，不觸發通知
+ */
+function initAccount(platform, account, postIds) {
+  const state = readState();
+  if (!state[platform]) state[platform] = {};
+  if (!state[platform][account]) state[platform][account] = { seen_posts: [] };
+  
+  // 保留最後 50 筆
+  state[platform][account].seen_posts = postIds.slice(-50);
+  state[platform][account].last_checked_at = new Date().toISOString();
+  writeState(state);
+}
+
 module.exports = {
   readState,
   writeState,
-  isNewPost
+  isNewPost,
+  isNewAccount,
+  initAccount
 };

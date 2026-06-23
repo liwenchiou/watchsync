@@ -32,6 +32,13 @@ async function processAccount(platform, account, fetchFunction) {
   // 反轉陣列，讓比較舊的新貼文先發送通知，確保時間順序正確
   const reversedPosts = [...postsArray].reverse();
 
+  // 如果是全新部署或沒有 state.json 的環境，靜默初始化，不要發通知
+  if (storage.isNewAccount(platform, account)) {
+    console.log(`[WatchSync] 初次部署或無紀錄，已自動記錄 @${account} 的 ${reversedPosts.length} 篇貼文，不觸發洗版通知。`);
+    storage.initAccount(platform, account, reversedPosts.map(p => p.id));
+    return; // 結束這次檢查
+  }
+
   let hasNew = false;
   for (const post of reversedPosts) {
     if (isNewPost(platform, account, post.id)) {
