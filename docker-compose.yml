@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  watchsync:
+    build: .
+    container_name: watchsync_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./state.json:/usr/src/app/state.json
